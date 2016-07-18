@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<install version="1.0" type="eshopplugin" group="payment">
+	<name>os_payco</name>
+	<title>Pagaycobra.com - Pagar con Tarjeta de Crédito, Debito / Efectivo</title>	
+	<author>Equipo Desarrollo Pagaycobra.com</author>
+	<creationDate>04-08-2015</creationDate>
+	<copyright>Copyright 2015 pagaycobra.com</copyright>
+	<license>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL version 2</license>
+	<authorEmail>desarrollo@payco.co</authorEmail>
+	<authorUrl>www.pagaycobra.com</authorUrl>
+	<version>1.0.0</version>
+	<description>Pagaycobra.com Plugin Para Eshop Extension</description>	
+	<config>	
+		<fields name="params" addfieldpath="/administrator/components/com_eshop/elements/">
+			<fieldset name="basic" addfieldpath="/administrator/components/com_eshop/elements">
+				<field name="payco_mode" type="list" label="Modo" description="Seleccione el modo en que desea enviar las transacciones en pruebas o producción">
+					<option value="0">Si</option>
+					<option value="1">No</option>
+				</field>
+				<field name="payco_id" type="text" size="40" label="P_CUST_ID_CLIENTE" description="Código de identificación del comercio, lo puedes ver en el panel de clientes ingresando a: https://secure.payco.co/clientes" default=""></field>	
+				<field name="payco_key" type="text" label="P_KEY" description="LLave transaccional del comercio, la puedes ver en el panel de clientes ingresando a: https://secure.payco.co/clientes"></field>
+				<field name="payment_fee" type="text" default="0" size="10" label="Impuestos" description="Ingrese el % de impuestos de la compra: ejemplo iva 16% o 0 si la compra tiene los impuestos incluidos"></field>
+				<field name="min_sub_total" type="text" default="0" size="10" label="Pago minimo" description="Ingrese el pago minimo de compras"></field>
+				<field name="taxclass_id" type="eshoptaxclass" label="Tax Class"></field>
+				<field name="geozone_id" type="eshopgeozone" label="Geo Zone"></field>		
+			</fieldset>			
+		</fields>
+	</config>
+	<files>
+		<filename>os_payco.php</filename>				
+	</files>	
+	<installsql />
+	<installfile />	
+</install>
