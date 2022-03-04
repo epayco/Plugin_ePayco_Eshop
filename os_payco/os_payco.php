@@ -353,7 +353,11 @@ class os_epayco extends os_payment {
 				case 2: {
 					$session = JFactory::getSession();
 					$session->set('eshop_payment_error_reason', $_POST['x_response_reason_text']);
-	
+					if($orderStatusName == 'Canceled'
+					   || $orderStatusName == 'Pending')
+					{}else{EshopHelper::updateInventory($row);}
+				   	$row->order_status_id = $this->getOrderStatusId($x_cod_transaction_state);
+					$row->store();
 					if(!$isConfirmation){
 						$app->redirect(JRoute::_('index.php?option=com_eshop&view=checkout&layout=failure'));
 					}else{
@@ -381,7 +385,11 @@ class os_epayco extends os_payment {
 				case 4: {
 					$session = JFactory::getSession();
 					$session->set('eshop_payment_error_reason', $_POST['x_response_reason_text']);
-	
+					if($orderStatusName == 'Failed'
+						|| $orderStatusName == 'Pending')
+				 	{}else{EshopHelper::updateInventory($row);}
+					$row->order_status_id = $this->getOrderStatusId($x_cod_transaction_state);
+				 	$row->store();
 					if(!$isConfirmation){
 						$app->redirect(JRoute::_('index.php?option=com_eshop&view=checkout&layout=failure'));
 					}else{
@@ -392,7 +400,11 @@ class os_epayco extends os_payment {
 				case 6: {
 					$session = JFactory::getSession();
 					$session->set('eshop_payment_error_reason', $_POST['x_response_reason_text']);
-	
+					if($orderStatusName == 'Canceled Reversal'
+						|| $orderStatusName == 'Pending')
+				 	{}else{EshopHelper::updateInventory($row);}
+					$row->order_status_id = $this->getOrderStatusId($x_cod_transaction_state);
+				 	$row->store();
 					if(!$isConfirmation){
 						$app->redirect(JRoute::_('index.php?option=com_eshop&view=checkout&layout=failure'));
 					}else{
@@ -403,7 +415,11 @@ class os_epayco extends os_payment {
 				case 9: {
 					$session = JFactory::getSession();
 					$session->set('eshop_payment_error_reason', $_POST['x_response_reason_text']);
-	
+					if($orderStatusName == 'Canceled Reversal'
+						|| $orderStatusName == 'Pending')
+				 	{}else{EshopHelper::updateInventory($row);}
+					$row->order_status_id = $this->getOrderStatusId($x_cod_transaction_state);
+				 	$row->store();
 					if(!$isConfirmation){
 						$app->redirect(JRoute::_('index.php?option=com_eshop&view=checkout&layout=failure'));
 					}else{
@@ -414,11 +430,15 @@ class os_epayco extends os_payment {
 				default: {
 					$session = JFactory::getSession();
 					$session->set('eshop_payment_error_reason', $_POST['x_response_reason_text']);
-	
+					if($orderStatusName == 'Failed'
+						|| $orderStatusName == 'Pending')
+				 	{}else{EshopHelper::updateInventory($row);}
+					$row->order_status_id = $this->getOrderStatusId(4);
+				 	$row->store();
 					if(!$isConfirmation){
 						$app->redirect(JRoute::_('index.php?option=com_eshop&view=checkout&layout=failure'));
 					}else{
-						echo "Canceled";
+						echo "Failed";
 						exit();
 					}
 				}break;
@@ -428,7 +448,14 @@ class os_epayco extends os_payment {
 		}else{
 			$session = JFactory::getSession();
 			$session->set('eshop_payment_error_reason', $_POST['x_response_reason_text']);
-
+			if(!empty($result)){
+				if($orderStatusName == 'Canceled'
+				|| $orderStatusName == 'Pending')
+		 		{}else{EshopHelper::updateInventory($row);}
+				$row->order_status_id = $this->getOrderStatusId(4);
+				$row->store();
+			}
+			
 			if(!$isConfirmation){
 				$app->redirect(JRoute::_('index.php?option=com_eshop&view=checkout&layout=failure'));
 			}
