@@ -1,34 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <install version="1.0" type="eshopplugin" group="payment">
-	<name>os_payco</name>
-	<title>Pagaycobra.com - Pagar con Tarjeta de Crédito, Debito / Efectivo</title>	
-	<author>Equipo Desarrollo Pagaycobra.com</author>
-	<creationDate>04-08-2015</creationDate>
-	<copyright>Copyright 2015 pagaycobra.com</copyright>
-	<license>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL version 2</license>
-	<authorEmail>desarrollo@payco.co</authorEmail>
-	<authorUrl>www.pagaycobra.com</authorUrl>
-	<version>1.0.0</version>
-	<description>Pagaycobra.com Plugin Para Eshop Extension</description>	
-	<config>	
-		<fields name="params" addfieldpath="/administrator/components/com_eshop/elements/">
-			<fieldset name="basic" addfieldpath="/administrator/components/com_eshop/elements">
-				<field name="payco_mode" type="list" label="Modo" description="Seleccione el modo en que desea enviar las transacciones en pruebas o producción">
-					<option value="0">Si</option>
-					<option value="1">No</option>
-				</field>
-				<field name="payco_id" type="text" size="40" label="P_CUST_ID_CLIENTE" description="Código de identificación del comercio, lo puedes ver en el panel de clientes ingresando a: https://secure.payco.co/clientes" default=""></field>	
-				<field name="payco_key" type="text" label="P_KEY" description="LLave transaccional del comercio, la puedes ver en el panel de clientes ingresando a: https://secure.payco.co/clientes"></field>
-				<field name="payment_fee" type="text" default="0" size="10" label="Impuestos" description="Ingrese el % de impuestos de la compra: ejemplo iva 16% o 0 si la compra tiene los impuestos incluidos"></field>
-				<field name="min_sub_total" type="text" default="0" size="10" label="Pago minimo" description="Ingrese el pago minimo de compras"></field>
-				<field name="taxclass_id" type="eshoptaxclass" label="Tax Class"></field>
-				<field name="geozone_id" type="eshopgeozone" label="Geo Zone"></field>		
-			</fieldset>			
-		</fields>
-	</config>
-	<files>
-		<filename>os_payco.php</filename>				
-	</files>	
-	<installsql />
-	<installfile />	
+    <name>os_epayco</name>
+    <creationDate>26-04-2021</creationDate>
+    <author>ePayco</author>
+    <title>ePayco</title>
+    <authorEmail>ricardo.saldarriaga@payco.co</authorEmail>
+    <authorUrl>https://epayco.co</authorUrl>
+    <copyright>Copyright 2011-2021 ePayco.co Todos los derechos reservados.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
+    <version>1.0.0</version>
+    <description></description>
+    <config>
+        <fields name="params" addfieldpath="/administrator/components/com_eshop/elements/">
+            <fieldset name="basic" addfieldpath="/administrator/components/com_eshop/elements/">
+                <field type="text" name="epayco_public_key" size="50" label="PUBLIC_KEY" description="Corresponde a la llave de autenticación en el API Rest. Proporcionado en su panel de clientes en la opción configuración" />
+                <field type="text" name="epayco_cust_id" size="50" default="" label="P_CUST_ID_CLIENTE"  description="ID de cliente que lo representa en la plataforma. Proporcionado en su panel de clientes en la opción configuración."/>
+                <field type="text" name="epayco_p_key"  size="50" label="P_KEY" default="" description="Corresponde a la llave de autenticación en el API Rest. Proporcionado en su panel de clientes en la opción configuración." />
+                <field name="p_test_request" type="radio" label="Modo de pruebas" description="Eligir si usar modo de pruebas" >
+                    <option value="1">JYES</option>
+					<option value="0">JNO</option>
+                </field>
+                <field name="p_external_request" type="radio" label="OnePage Checkout" description="Eligir si usar extandar checkout o one page" >
+                    <option value="1">JYES</option>
+					<option value="0">JNO</option>
+                </field>
+                <field name="p_lang_request" type="radio" label="Lenguaje Checkout" description="Eligir el lenguaje del checkout" >
+                    <option value="es">ES</option>
+					<option value="en">EN</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+    <files>
+	    <filename>os_epayco.php</filename>
+    </files>
 </install>
