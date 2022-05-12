@@ -1,30 +1,52 @@
 <?php
-
 /**
- * @version		3.3.3
+ * @version		1.3.8
  * @package		Joomla
  * @subpackage	EShop
  * @author  	ePayco
- * @copyright	Copyright 2011-2021 ePayco.co Todos los derechos reservados.
+ * @copyright	Copyright (C) 2012 Ossolution Team
  * @license		GNU/GPL, see LICENSE.php
  */
-
+// no direct access
 defined('_JEXEC') or die();
 
-class os_epayco extends os_payment {
-	function __construct($params, $config = array()) 
+class os_payco extends os_payment
+{
+	/**
+	 * Constructor functions, init some parameter
+	 *
+	 * @param object $config        	
+	 */
+	public function __construct($params)
 	{
-		parent::__construct($params, $config);
+        $config = array(
+            'type' => 0,
+            'show_card_type' => false,
+            'show_card_holder_name' => false
+        );
+
+        parent::__construct($params, $config);
 
 		$this->setData('publicKey', $params->get("epayco_public_key"));
-		$this->setData('pKey', $params->get("epayco_p_key"));
-		$this->setData('customerId', $params->get("epayco_cust_id"));
+		$this->setData('customerId', $params->get("payco_id"));
+		$this->setData('pKey', $params->get("payco_key"));
+		$key=$params->get('payco_key');
+		$id=$params->get('payco_id');
+		
 		$this->setData('external', $params->get("p_external_request") == "0");
 		$this->setData('test', $params->get("p_test_request") == "1");
 		$this->setData('checkoutLang', $params->get("p_lang_request") == "es");
 		
+		$p_key=sha1($key.$id);
+		$this->setData('p_key',$p_key);
+		$this->setData('lc', 'ES');
+        $this->setData('charset', 'utf-8');
 	}
-
+	/**
+	 * Process Payment
+	 *
+	 * @param array $params        	
+	 */
 	public function processPayment($data)
 	{
 		$siteUrl = EshopHelper::getSiteUrl();
@@ -52,8 +74,6 @@ class os_epayco extends os_payment {
 		$this->setData('billing_name', $data["payment_firstname"]." ".$data["payment_lastname"]);
 		$this->setData('billing_addres',$data["payment_address_1"]);
 		$this->setData('billing_email',$data["payment_email"]);
-
-		$this->submitPost();
 	}
 
 	public function submitPost($url = null, $data = array())
@@ -252,8 +272,12 @@ class os_epayco extends os_payment {
     	<?php
 	}
 
+
+	/**
+	 * Process payment
+	*/
 	public function verifyPayment()
-	{	 
+	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$isConfirmation = $input->get('confirmation', "false", 'string') == "true";
@@ -458,8 +482,8 @@ class os_epayco extends os_payment {
 				$app->redirect(JRoute::_('index.php?option=com_eshop&view=checkout&layout=failure'));
 			}
 		}
-	}
 
+	}
 	public function generateSignature($x_ref_payco, $trxId, $x_amount, $x_currency_code)
 	{
 		$x_signature = hash('sha256',
