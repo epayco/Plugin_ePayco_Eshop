@@ -50,7 +50,7 @@ class os_payco extends os_payment
 	public function processPayment($data)
 	{
 		$siteUrl = EshopHelper::getSiteUrl();
-		$returnUrl = $siteUrl . 'index.php?option=com_eshop&view=checkout&layout=complete&task=checkout.verifyPayment&payment_method=os_epayco&order_number=' . $data['order_number'];
+		$returnUrl = $siteUrl . 'index.php?option=com_eshop&view=checkout&layout=complete&task=checkout.verifyPayment&payment_method=os_payco&order_number=' . $data['order_number'];
 		$confirmUrl = $returnUrl . '&confirmation=true';
 		$countryInfo = EshopHelper::getCountry($data['payment_country_id']);
 		$countryIso	= $countryInfo->iso_code_2;
@@ -279,6 +279,7 @@ class os_payco extends os_payment
 	*/
 	public function verifyPayment()
 	{
+	   
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$isConfirmation = $input->get('confirmation', "false", 'string') == "true";
