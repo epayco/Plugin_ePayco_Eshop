@@ -74,6 +74,7 @@ class os_payco extends os_payment
 		$this->setData('billing_name', $data["payment_firstname"]." ".$data["payment_lastname"]);
 		$this->setData('billing_addres',$data["payment_address_1"]);
 		$this->setData('billing_email',$data["payment_email"]);
+		$this->submitPost();
 	}
 
 	public function submitPost($url = null, $data = array())
