@@ -356,8 +356,13 @@ class os_payco extends os_payment
 			switch ($x_cod_transaction_state) {
 				case 1: {
 					if($orderStatusName == 'Complete'
-					 || $orderStatusName == 'Processing'){}else{
-						EshopHelper::completeOrder($row);
+					 || $orderStatusName == 'Processing'){}
+					 elseif($orderStatusName == 'Canceled'){
+						$row->order_status_id = $this->getOrderStatusId(3);
+					    $row->store();
+					    EshopHelper::completeOrder($row);
+					}else{
+					    EshopHelper::completeOrder($row);
 					}
 					$row->order_status_id = $this->getOrderStatusId($x_cod_transaction_state);
 					$row->store();

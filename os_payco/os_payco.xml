@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install version="1.0" type="eshopplugin" group="payment">
 	<name>os_payco</name>
-	<title>Pagaycobra.com - Pagar con Tarjeta de Crédito, Debito / Efectivo</title>	
+	<title>epayco.com - Pagar con Tarjeta de Crédito, Debito / Efectivo</title>	
 	<author>Equipo Desarrollo Pagaycobra.com</author>
 	<creationDate>26-04-2021</creationDate>
-	<copyright>Copyright 2015 pagaycobra.com</copyright>
+	<copyright>Copyright 2015 epayco.com</copyright>
 	<license>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL version 2</license>
-	<authorEmail>desarrollo@payco.co</authorEmail>
-	<authorUrl>www.pagaycobra.com</authorUrl>
+	<authorEmail>desarrollo@epayco.com</authorEmail>
+	<authorUrl>www.epayco.com</authorUrl>
 	<version>1.0.0</version>
-	<description>Pagaycobra.com Plugin Para Eshop Extension</description>	
+	<description>epayco.com Plugin Para Eshop Extension</description>	
 	<config>	
 		<fields name="params" addfieldpath="/administrator/components/com_eshop/elements/">
 			<fieldset name="basic" addfieldpath="/administrator/components/com_eshop/elements">
