@@ -205,7 +205,7 @@ class os_payco extends os_payment
 				}
 			</style>
         	<div class="eshop-heading"> <h3> ePayco </h3> </div>
-			<?php echo JHtml::_('script', 'https://epayco-checkout-testing.s3.amazonaws.com/checkout.preprod.js?version=1643645084821'); ?>
+			<?php echo JHtml::_('script', 'https://checkout.epayco.co/checkout.js'); ?>
 			<script type="text/javascript">
 				function openCheckout() {
 					var orderData = <?php echo json_encode($this->data); ?>;
@@ -522,7 +522,7 @@ class os_payco extends os_payment
 
 	public function getTransactionDetails($x_ref_payco)
 	{
-		$url = "https://secure.epayco.io/validation/v1/reference/" . $x_ref_payco;
+		$url = "https://secure.epayco.co/validation/v1/reference/" . $x_ref_payco;
 		$response = $this->apiService(
 			$url,
 			null,
