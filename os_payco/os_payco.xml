@@ -15,6 +15,7 @@
 			<fieldset name="basic" addfieldpath="/administrator/components/com_eshop/elements">
 				<field name="payco_id" type="text" size="40" label="P_CUST_ID_CLIENTE" description="Código de identificación del comercio, lo puedes ver en el panel de clientes ingresando a: https://secure.payco.co/clientes" default=""></field>
 				<field type="text" name="epayco_public_key" size="50" label="PUBLIC_KEY" description="Corresponde a la llave de autenticación en el API Rest. Proporcionado en su panel de clientes en la opción configuración" />	
+				<field type="text" name="epayco_private_key" size="50" label="PRIVATE_KEY" description="Corresponde a la llave de autenticación en el API Rest. Proporcionado en su panel de clientes en la opción configuración" />	
 				<field name="payco_key" type="text" label="P_KEY" description="LLave transaccional del comercio, la puedes ver en el panel de clientes ingresando a: https://secure.payco.co/clientes"></field>
 				 <field name="p_test_request" type="radio" label="Modo de pruebas" description="Eligir si usar modo de pruebas" >
                     <option value="1">JYES</option>
