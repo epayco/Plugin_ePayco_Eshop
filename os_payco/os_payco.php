@@ -208,94 +208,99 @@ class os_payco extends os_payment
 				}
 			</style>
         	<div class="eshop-heading"> <h3> ePayco </h3> </div>
-			<?php echo JHtml::_('script', 'https://epayco-checkout-testing.s3.amazonaws.com/checkout.preprod.js'); ?>
+			<?php echo JHtml::_('script', 'https://checkout.epayco.co/checkout.js'); ?>
 			<script type="text/javascript">
-				var orderData = <?php echo json_encode($this->data); ?>;
-				var lang;
-				if(orderData.checkoutLang){
-					lang = "ES";
-				}else{
-					lang = "EN";
-				}
-				var checkoutData = {
-					name: "Order #" + orderData.orderNumber,
-					description: "Order #" + orderData.orderNumber,
-					invoice: orderData.invoiceNumber,
-					currency: orderData.currencyCode,
-					amount: orderData.total.toString(),
-					tax_base: orderData.base_tax.toString(),
-					tax: orderData.tax.toString(),
-					country: orderData.country,
-					lang: lang,
-					confirmation: orderData.confirmUrl,
-					response: orderData.returnUrl,
-					external: orderData.external.toString(),
-					extra1:orderData.invoiceNumber,
-					name_billing: orderData.billing_name,
-					address_billing: orderData.billing_addres,
-					email_billing: orderData.billing_email,
-					autoclick: "true",
-					ip: orderData.ip,
-					test: orderData.test.toString(),
-					extras_epayco:{
-						extra5:"P50"
+				function openCheckout() {
+					var orderData = <?php echo json_encode($this->data); ?>;
+					var lang;
+					if(orderData.checkoutLang){
+						lang = "ES";
+					}else{
+						lang = "EN";
 					}
-				};
-				function openCheckout(checkoutData,orderData) {
+					var extras_epayco = {
+					    extra5:"P50"
+					}
+					var checkoutData = {
+						name: "Order #" + orderData.orderNumber,
+						description: "Order #" + orderData.orderNumber,
+						invoice: orderData.invoiceNumber.toString(),
+						currency: orderData.currencyCode,
+						amount: orderData.total.toString(),
+						tax_base: orderData.base_tax.toString(),
+						tax: orderData.tax.toString(),
+						country: orderData.country,
+						lang: lang,
+						confirmation: orderData.confirmUrl,
+						response: orderData.returnUrl,
+						external: orderData.external.toString(),
+						extra1:orderData.invoiceNumber.toString(),
+						name_billing: orderData.billing_name,
+          				address_billing: orderData.billing_addres,
+						email_billing: orderData.billing_email,
+						extras_epayco: extras_epayco,
+						test: orderData.test.toString(),
+						ip: orderData.ip
+					};
 					var checkoutHandler = ePayco.checkout.configure({
 						key: orderData.publicKey,
 						test: orderData.test
 					});
-					checkoutHandler.open(checkoutData);
-				}
-				var openNewChekout = function (data,orderData) {
 					const apiKey = orderData.publicKey;
-					const privateKey = orderData.privateKey;
-					if(localStorage.getItem("invoicePayment") == null){
-						localStorage.setItem("invoicePayment", data.invoice);
-						makePayment(privateKey,apiKey,data, data.external == "true"?true:false,orderData)
-					}else{
-						if(localStorage.getItem("invoicePayment") != data.invoice){
-							localStorage.removeItem("invoicePayment");
-							localStorage.setItem("invoicePayment", data.invoice);
-							makePayment(privateKey,apiKey,data, data.external == "true"?true:false,orderData)
-						}else{
-							makePayment(privateKey,apiKey,data, data.external == "true"?true:false,orderData)
-						}
-					}
+                    const privateKey = orderData.privateKey;
+                    var openNewChekout = function () {
+                        if(localStorage.getItem("invoicePayment") == null){
+                            localStorage.setItem("invoicePayment", checkoutData.invoice);
+                            makePayment(privateKey,apiKey,checkoutData, checkoutData.external == "true"?true:false)
+                        }else{
+                            if(localStorage.getItem("invoicePayment") != checkoutData.invoice){
+                                localStorage.removeItem("invoicePayment");
+                                localStorage.setItem("invoicePayment", checkoutData.invoice);
+                                makePayment(privateKey,apiKey,checkoutData, checkoutData.external == "true"?true:false)
+                            }else{
+                                makePayment(privateKey,apiKey,checkoutData, checkoutData.external == "true"?true:false)
+                            }
+                        }
+                    }
+                    var makePayment = function (privatekey, apikey, info, external) {
+                        const headers = { "Content-Type": "application/json" } ;
+                        headers["privatekey"] = privatekey;
+                        headers["apikey"] = apikey;
+                        var payment =   function (){
+                            return  fetch("https://cms.epayco.co/checkout/payment/session", {
+                                method: "POST",
+                                body: JSON.stringify(info),
+                                headers
+                            })
+                                .then(res =>  res.json())
+                                .catch(err => err);
+                        }
+                        payment()
+                            .then(session => {
+                                if(session.data.sessionId != undefined){
+                                    localStorage.removeItem("sessionPayment");
+                                    localStorage.setItem("sessionPayment", session.data.sessionId);
+                                    const handlerNew = window.ePayco.checkout.configure({
+                                        sessionId: session.data.sessionId,
+                                        external: external,
+                                    });
+                                    handlerNew.openNew()
+                                }else{
+                                    checkoutHandler.open(checkoutData)
+                                }
+                            })
+                            .catch(error => {
+                                error.message;
+                            });
+                    }
+                    var openChekout = function () {
+                        //handler.open(data);
+                        openNewChekout()
+                    }
+                    openNewChekout()
+					//checkoutHandler.open(checkoutData);
 				}
-				var makePayment = function (privatekey, apikey, info, external, orderData) {
-					const headers = { "Content-Type": "application/json" } ;
-					headers["privatekey"] = privatekey;
-					headers["apikey"] = apikey;
-					var payment =   function (info,orderData){
-						return  fetch("https://cms.epayco.io/checkout/payment/session", {
-							method: "POST",
-							body: JSON.stringify(info),
-							headers
-						})
-							.then(res =>  res.json())
-							.catch(err => err);
-					}
-					payment(info,orderData)
-						.then(session => {
-							if(session.data.sessionId != undefined){
-								localStorage.removeItem("sessionPayment");
-								localStorage.setItem("sessionPayment", session.data.sessionId);
-								const handlerNew = window.ePayco.checkout.configure({
-									sessionId: session.data.sessionId,
-									external: external,
-								});
-								handlerNew.openNew()
-							}else{
-								openCheckout(info,orderData)
-							}
-						})
-						.catch(error => {
-							error.message;
-						});
-				}
-				openNewChekout(checkoutData,orderData);
+				openCheckout();
 			</script>
 			<div class="loader-container">
 				<div class="loading"></div>
@@ -400,8 +405,7 @@ class os_payco extends os_payment
 		}else{
 			 $validation = false;
 		}	
-		
-		if($x_signature == $generatedSignature && $validation){
+		if($x_signature == $generatedSignature){
 			$invoice_Id = $result[0]->id;
 			$row = JTable::getInstance('Eshop', 'Order');
 			$row->load($invoice_Id);
@@ -560,6 +564,27 @@ class os_payco extends os_payment
 
       return $x_signature;
 	}
+	
+	 public function getCustomerIp(){
+        $ipaddress = '';
+        if (isset($_SERVER['HTTP_CLIENT_IP']))
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        else if(isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']))
+            $ipaddress = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
+        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        else if(isset($_SERVER['REMOTE_ADDR']))
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        else
+            $ipaddress = 'UNKNOWN';
+        return $ipaddress;
+    }
 
 	public function getOrderStatusId($paymentStatus)
 	{
@@ -578,7 +603,7 @@ class os_payco extends os_payment
 
 	public function getTransactionDetails($x_ref_payco)
 	{
-		$url = "https://secure.epayco.io/validation/v1/reference/" . $x_ref_payco;
+		$url = "https://secure.epayco.co/validation/v1/reference/" . $x_ref_payco;
 		$response = $this->apiService(
 			$url,
 			null,
@@ -632,25 +657,4 @@ class os_payco extends os_payment
 			return $exception;
 		}
 	}
-
-	public function getCustomerIp(){
-        $ipaddress = '';
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if(isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if(isset($_SERVER['REMOTE_ADDR']))
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
-    }
 }
