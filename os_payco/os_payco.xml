@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install version="1.0" type="eshopplugin" group="payment">
 	<name>os_payco</name>
-	<title>epayco.com - Pagar con Tarjeta de Crédito, Debito / Efectivo</title>	
+	<title>ePayco: Paga con Tarjeta de crédito/débito, PSE, Daviplata, Nequi, Paypal, y muchos mas.</title>	
 	<author>Equipo Desarrollo Pagaycobra.com</author>
 	<creationDate>26-04-2021</creationDate>
 	<copyright>Copyright 2015 epayco.com</copyright>
